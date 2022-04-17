@@ -9,9 +9,6 @@ Game::Game(const int window_width, const int window_height, const int margin, co
              board_(board), player1_(player1), player2_(player2), tiles_left_(board.GetHeight() * board.GetWidth()) {}
 
 void Game::Display() const {
-  ci::Color background_color("white");
-  ci::gl::clear(background_color);
-
   int n_tiles_width = board_.GetWidth();
   int n_tiles_height = board_.GetHeight();
 
@@ -35,14 +32,16 @@ void Game::RunGame() {
   int turn = 1;
 
   while (!GameOver()) {
-    char* color;
+    char* color = "blue";
 
+    /*
     if (turn == 1) {
       color = player1_.GetMove();
     }
     else {
       color = player2_.GetMove();
     }
+     */
 
     tiles_left_ -= board_.UpdateBoard(turn, color);
     turn = (turn + 1) % 2 + 1;
@@ -53,6 +52,11 @@ void Game::RunGame() {
 
 bool Game::GameOver() {
   return tiles_left_ == 0;
+}
+
+void Game::UpdateBoard() {
+  char* color = "blue";
+  board_.UpdateBoard(1, color);
 }
 
 }

@@ -1,4 +1,11 @@
-//
-// Created by berta on 4/12/2022.
-//
+#pragma once
 
+#include "player.h"
+
+namespace fillergame {
+
+char* Player::GetMove() const {
+  return "blue";
+}
+
+}

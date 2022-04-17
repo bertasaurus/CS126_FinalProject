@@ -4,7 +4,7 @@ namespace fillergame {
 
 class Player {
   public:
-    virtual char* GetMove() const;
+    char* GetMove() const;
 };
 
 }

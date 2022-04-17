@@ -13,7 +13,7 @@ void Board::GenerateColors() {
   for (int i = 0; i < width_; i++) {
     for (int j = 0; j < height_; j++) {
       int idx = rand() % colors_.size();
-      board_.set(width_, height_, colors_[idx]);
+      board_.set(i, j, colors_[idx]);
     }
   }
 }
