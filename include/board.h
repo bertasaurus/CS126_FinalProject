@@ -48,6 +48,7 @@ struct vec2 {
 
 class Board {
   private:
+    int tiles_left_ = 0;
     int width_;
     int height_;
     std::vector<char*> colors_;

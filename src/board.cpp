@@ -1,6 +1,7 @@
 #pragma once
 
 #include "board.h"
+#include <ctime>
 
 namespace fillergame {
 
@@ -10,6 +11,7 @@ Board::Board(const int width, const int height, const std::vector<char*>& colors
 }
 
 void Board::GenerateColors() {
+  srand(time(NULL));
   for (int i = 0; i < width_; i++) {
     for (int j = 0; j < height_; j++) {
       int idx = rand() % colors_.size();
