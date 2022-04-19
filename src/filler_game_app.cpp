@@ -1,8 +1,9 @@
 #include "filler_game_app.h"
+#include <string>
 
 namespace fillergame {
 
-FillerGameApp::FillerGameApp() : board_(12, 10, std::vector<char*> {"blue", "green", "red", "purple", "yellow", "pink"}),
+FillerGameApp::FillerGameApp() : board_(14, 8, std::vector<char*> {"blue", "green", "red", "purple", "yellow", "pink"}),
   player1_(Player()), player2_(Player()) {
   ci::app::setWindowSize(kWindowWidth, kWindowHeight);
 
@@ -12,38 +13,85 @@ void FillerGameApp::draw() {
   ci::Color background_color("black");
   ci::gl::clear(background_color);
 
-  ci::gl::translate(kMargin, kMargin);
+  DrawScoreBoard();
+
   DrawBoard();
-  ci::gl::translate(-kMargin, -kMargin);
 
   DrawButtons();
+}
 
+void FillerGameApp::DrawScoreBoard() const {
+  ci::Font title_font("Times New Roman", 50);
+  ci::Font score_font("Times New Roman", 50);
+
+  std::string title = "Player 1 turn";
+
+  if (turn_ == 2) {
+    title = "Player 2 turn";
+  }
+
+  int game_winner = board_.GetGameWinner();
+  if (game_winner == 1) {
+    title = "Player 1 wins!";
+  }
+  if (game_winner == 2) {
+    title = "Player 2 wins!";
+  }
+  if (game_winner == 3) {
+    title = "It's a tie!";
+  }
+
+  ci::gl::drawString(std::to_string(board_.GetPlayerScore(1)), glm::vec2(kMargin, kMargin + kTitleHeight / 2), "white", score_font);
+
+  ci::gl::drawStringCentered(title, glm::vec2(kWindowWidth / 2, kMargin + kTitleHeight / 2), "white", title_font);
+
+  ci::gl::drawStringRight(std::to_string(board_.GetPlayerScore(2)), glm::vec2(kWindowWidth - kMargin, kMargin + kTitleHeight / 2), "white", score_font);
+}
+
+float FillerGameApp::CalculateButtonSize() const {
+  int nColors = kColors.size();
+  float button_bar_width = kWindowWidth - 2 * kButtonSpacing;
+  float square_size = (button_bar_width - (nColors - 1) * kButtonSpacing) / nColors;
+
+  return square_size;
+}
+
+std::vector<glm::vec2> FillerGameApp::GetButtonLocations() const {
+  std::vector<glm::vec2> button_locations;
+
+  int nColors = kColors.size();
+  float square_size = CalculateButtonSize();
+
+  float xTranslate = kButtonSpacing;
+  float yTranslate = kTitleHeight + kBoardHeight + kMargin * 2 + (kWindowHeight - kTitleHeight - kBoardHeight - kMargin * 2 - square_size) / 2;
+  glm::vec2 translate(xTranslate, yTranslate);
+
+  for (int i = nColors - 1; i >= 0; i--) {
+    glm::vec2 loc = glm::vec2(kButtonSpacing * i + square_size * i, 0) + translate;
+    button_locations.push_back(loc);
+  }
+
+  return button_locations;
 }
 
 void FillerGameApp::DrawButtons() const {
-  float button_bar_width = kWindowWidth - 2 * kButtonSpacing;
   int nColors = kColors.size();
+  float square_size = CalculateButtonSize();
 
-  float square_size = (button_bar_width - (nColors - 1) * kButtonSpacing) / nColors;
-
-  float xTranslate = kButtonSpacing;
-  float yTranslate = kWindowHeight - square_size - kMargin;
-
-  ci::gl::translate(xTranslate, yTranslate);
+  std::vector<glm::vec2> button_locations = GetButtonLocations();
 
   for (int i = 0; i < nColors; i++) {
-    glm::vec2 top_left = glm::vec2(kButtonSpacing * i + square_size * i, 0);
-    glm::vec2 bottom_right = glm::vec2(kButtonSpacing * i + square_size * (i + 1), square_size);
+    glm::vec2 top_left = button_locations.at(i);
+    glm::vec2 bottom_right = glm::vec2(top_left.x + square_size, top_left.y + square_size);
 
     ci::gl::color(ci::Color(kColors[i]));
     ci::Rectf button(top_left, bottom_right);
     ci::gl::drawSolidRect(button);
   }
-
-  ci::gl::translate(-xTranslate, -yTranslate);
 }
 
 void FillerGameApp::DrawBoard() const {
+  ci::gl::translate(kMargin, kMargin * 2 + kTitleHeight);
   int n_tiles_width = board_.GetWidth();
   int n_tiles_height = board_.GetHeight();
 
@@ -61,14 +109,44 @@ void FillerGameApp::DrawBoard() const {
       ci::gl::drawSolidRect(tile);
     }
   }
+  ci::gl::translate(-kMargin, -(kMargin * 2 + kTitleHeight));
+
 }
 
 void FillerGameApp::update() {
+  if ((turn_ == 1 && player1_.IsManualPlayer()) || (turn_ == 2 && player2_.IsManualPlayer())) {
+    return;
+  }
+
+  if (turn_ == 1) {
+    char* color = player1_.GetMove();
+    InputMove(turn_, color);
+  }
+  else {
+    char* color = player2_.GetMove();
+    InputMove(turn_, color);
+  }
 
 }
 
 void FillerGameApp::mouseDown(ci::app::MouseEvent event) {
+  std::vector<glm::vec2> button_locations = GetButtonLocations();
+  float square_size = CalculateButtonSize();
 
+  glm::vec2 pos = event.getPos();
+
+  for (size_t i = 0; i < kColors.size(); i++) {
+    glm::vec2 button = button_locations.at(i);
+    if (pos.x > button.x && pos.x < button.x + square_size && pos.y > button.y && pos.y < button.y + square_size) {
+      InputMove(turn_, kColors.at(i));
+      return;
+    }
+  }
+}
+
+void FillerGameApp::InputMove(const int player_idx, char* color) {
+  board_.UpdateBoard(player_idx, color);
+  turn_ = turn_ % 2 + 1;
 }
 
 }

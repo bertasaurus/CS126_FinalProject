@@ -8,4 +8,8 @@ char* Player::GetMove() const {
   return "blue";
 }
 
+bool Player::IsManualPlayer() const {
+  return true;
+}
+
 }

@@ -21,6 +21,14 @@ class FillerGameApp : public ci::app::App {
 
     void DrawBoard() const;
 
+    void DrawScoreBoard() const;
+
+    void InputMove(const int player_idx, char* color);
+
+    std::vector<glm::vec2> GetButtonLocations() const;
+
+    float CalculateButtonSize() const;
+
   public:
     FillerGameApp();
 
@@ -28,18 +36,19 @@ class FillerGameApp : public ci::app::App {
     void mouseDown(ci::app::MouseEvent event) override;
     void update() override;
 
-    const int kTilesWidth = 12;
-    const int kTilesHeight = 10;
+    const int kTilesWidth = 14;
+    const int kTilesHeight = 8;
+
+    const int kTitleHeight = 80;
 
     const int kWindowWidth = 800;
     const int kWindowHeight = 800;
-    const int kMargin = 70;
+    const int kMargin = 50;
 
-    const int kBottomSpace = 150;
-    const int kButtonSpacing = 50;
+    const int kButtonSpacing = 60;
 
     const int kBoardWidth = kWindowWidth - 2 * kMargin;
-    const int kBoardHeight = kWindowHeight - kBottomSpace - 3 * kMargin;
+    const int kBoardHeight = 400;
 
     const std::vector<char*> kColors {"blue", "green", "red", "purple", "yellow", "pink"};
 };

@@ -48,7 +48,7 @@ struct vec2 {
 
 class Board {
   private:
-    int tiles_left_ = 0;
+    int tiles_left_;
     int width_;
     int height_;
     std::vector<char*> colors_;
@@ -58,20 +58,24 @@ class Board {
 
     void GenerateColors();
 
-    std::vector<glm::vec2> GetAdjacentTiles(const int player_idx, char*& color);
+    void ClaimTile(const int player_idx, char*& color, const int a, const int b);
 
-    bool IsAdjacentToPlayer(const int player_idx, char*& color, const int a, const int b);
+    void ApplyMove(const int player_idx, char*& color);
 
   public:
     Board(const int width, const int height, const std::vector<char*>& colors);
 
     char* GetTileColor(const int a, const int b) const;
 
-    int UpdateBoard(const int player_idx, char*& color);
+    void UpdateBoard(const int player_idx, char*& color);
 
     int GetWidth() const;
 
     int GetHeight() const;
+
+    int GetGameWinner() const;
+
+    int GetPlayerScore(int player_idx) const;
 };
 
 }
