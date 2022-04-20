@@ -63,7 +63,6 @@ void Board::UpdateBoard(const int player_idx, char *&color) {
     }
   }
 
-
 }
 
 char* Board::GetTileColor(const int a, const int b) const {
@@ -107,6 +106,10 @@ int Board::GetPlayerScore(int player_idx) const {
     }
   }
   return count;
+}
+
+void Board::SetTileColor(const int a, const int b, char *&color) {
+  board_.set(a, b, color);
 }
 
 }

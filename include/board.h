@@ -67,6 +67,8 @@ class Board {
 
     char* GetTileColor(const int a, const int b) const;
 
+    void SetTileColor(const int a, const int b, char*& color);
+
     void UpdateBoard(const int player_idx, char*& color);
 
     int GetWidth() const;
