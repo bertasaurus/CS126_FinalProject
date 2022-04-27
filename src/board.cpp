@@ -15,6 +15,7 @@ Board::Board(const int width, const int height, const std::vector<char*>& colors
 }
 
 void Board::GenerateColors() {
+
   srand(time(NULL));
   for (int i = 0; i < width_; i++) {
     for (int j = 0; j < height_; j++) {
@@ -32,7 +33,7 @@ void Board::ClaimTile(const int player_idx, char *&color, const int a, const int
   if ((a > 0 && player_idx == tile_owner_.at(a - 1, b) && strcmp(board_.at(a, b), color) == 0)
       || (a < width_ - 1 && player_idx == tile_owner_.at(a + 1, b) && strcmp(board_.at(a, b), color) == 0)
       || (b > 0 && player_idx == tile_owner_.at(a, b - 1) && strcmp(board_.at(a, b), color) == 0)
-      || (b < height_ - 1 && player_idx == tile_owner_.at(a, b + 1) && strcmp(board_.at(a, b), color) == 0)){
+      || (b < height_ - 1 && player_idx == tile_owner_.at(a, b + 1) && strcmp(board_.at(a, b), color) == 0)) {
     tile_owner_.set(a, b, player_idx);
     tiles_left_--;
   }
