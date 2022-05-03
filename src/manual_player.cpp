@@ -4,8 +4,12 @@
 
 namespace fillergame {
 
-char* ManualPlayer::GetMove() const {
-  return "blue";
+char* ManualPlayer::GetMove(const Board& board) const {
+  return "black";
+}
+
+bool ManualPlayer::ShouldGetManualInput() const {
+  return true;
 }
 
 }

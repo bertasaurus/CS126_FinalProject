@@ -4,7 +4,7 @@
 namespace fillergame {
 
 FillerGameApp::FillerGameApp() : board_(14, 8, std::vector<char*> {"blue", "green", "red", "purple", "yellow", "pink"}),
-  player1_(Player()), player2_(Player()) {
+  player1_(ManualPlayer()), player2_(ManualPlayer()) {
   ci::app::setWindowSize(kWindowWidth, kWindowHeight);
 
 }
@@ -98,6 +98,9 @@ void FillerGameApp::DrawBoard() const {
   float tile_width = float(kBoardWidth) / float(n_tiles_width);
   float tile_height = float(kBoardHeight) / float(n_tiles_height);
 
+  // represents the player who most recently made a move
+  int other_idx = turn_ % 2 + 1;
+
   for (int i = 0; i < board_.GetWidth(); i++) {
     for (int j = 0; j < board_.GetHeight(); j++) {
       ci::gl::color(ci::Color(board_.GetTileColor(i, j)));
@@ -105,6 +108,14 @@ void FillerGameApp::DrawBoard() const {
       glm::vec2 top_left = glm::vec2(i * tile_width, j * tile_height);
       glm::vec2 bottom_right = glm::vec2((i + 1) * tile_width, (j + 1) * tile_height);
 
+      if (other_idx == board_.GetTileOwner(i, j)) {
+        float scalar = (timer_ / kAnimationTime) * kAnimationScalar;
+
+        glm::vec2 translate = glm::vec2(tile_width * scalar / 2, tile_height * scalar / 2);
+
+        top_left = top_left - translate;
+        bottom_right = bottom_right + translate;
+      }
       ci::Rectf tile(top_left, bottom_right);
       ci::gl::drawSolidRect(tile);
     }
@@ -114,7 +125,12 @@ void FillerGameApp::DrawBoard() const {
 }
 
 void FillerGameApp::update() {
-  if ((turn_ == 1 && player1_.IsManualPlayer()) || (turn_ == 2 && player2_.IsManualPlayer())) {
+  if (timer_ > 0) {
+    timer_ = timer_ - 1;
+    return;
+  }
+
+  if ((turn_ == 1 && player1_.ShouldGetManualInput()) || (turn_ == 2 && player2_.ShouldGetManualInput())) {
     return;
   }
 
@@ -130,6 +146,16 @@ void FillerGameApp::update() {
 }
 
 void FillerGameApp::mouseDown(ci::app::MouseEvent event) {
+  // If the game is still doing an animation, do not process moust event
+  if (timer_ > 0) {
+    return;
+  }
+
+  // If the current player is not a manual player, do not process mouse event
+  if (turn_ == 1 && !player1_.ShouldGetManualInput() || turn_ == 2 && !player2_.ShouldGetManualInput()) {
+    return;
+  }
+
   std::vector<glm::vec2> button_locations = GetButtonLocations();
   float square_size = CalculateButtonSize();
 
@@ -145,6 +171,7 @@ void FillerGameApp::mouseDown(ci::app::MouseEvent event) {
 }
 
 void FillerGameApp::InputMove(const int player_idx, char* color) {
+  timer_ = kAnimationTime;
   board_.UpdateBoard(player_idx, color);
   turn_ = turn_ % 2 + 1;
 }

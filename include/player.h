@@ -1,12 +1,15 @@
 #pragma once
 
+#include "board.h"
 namespace fillergame {
 
 class Player {
-  public:
-    char* GetMove() const;
+  private:
 
-    bool IsManualPlayer() const;
+  public:
+    virtual char* GetMove(const Board& board) const;
+
+    virtual bool ShouldGetManualInput() const;
 };
 
 }

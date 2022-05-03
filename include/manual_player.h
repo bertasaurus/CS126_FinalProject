@@ -4,9 +4,13 @@
 
 namespace fillergame {
 
-class ManualPlayer : Player {
+class ManualPlayer : public Player {
   public:
-    char* GetMove() const;
+    ManualPlayer();
+
+    char* GetMove(const Board& board) const override;
+
+    bool ShouldGetManualInput() const override;
 };
 
 }

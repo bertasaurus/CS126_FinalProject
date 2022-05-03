@@ -14,8 +14,19 @@ Board::Board(const int width, const int height, const std::vector<char*>& colors
   tile_owner_.set(width - 1, 0, 2);
 }
 
-void Board::GenerateColors() {
+Board::Board(const Board &other)
+    : width_(other.width_), height_(other.height_), colors_(other.colors_),
+      board_(other.width_, other.height_), tile_owner_(other.width_, other.height_),
+      tiles_left_(other.tiles_left_) {
+  for (int i = 0; i < width_; i++) {
+    for (int j = 0; j < width_; j++) {
+      board_.set(i, j, other.board_.at(i, j));
+      tile_owner_.set(i, j, other.tile_owner_.at(i, j));
+    }
+  }
+}
 
+void Board::GenerateColors() {
   srand(time(NULL));
   for (int i = 0; i < width_; i++) {
     for (int j = 0; j < height_; j++) {
@@ -70,12 +81,20 @@ char* Board::GetTileColor(const int a, const int b) const {
   return board_.at(a, b);
 }
 
+int Board::GetTileOwner(const int a, const int b) const {
+  return tile_owner_.at(a, b);
+}
+
 int Board::GetWidth() const {
   return width_;
 }
 
 int Board::GetHeight() const {
   return height_;
+}
+
+std::vector<char*> Board::GetColors() const {
+  return colors_;
 }
 
 int Board::GetGameWinner() const {

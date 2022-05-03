@@ -15,6 +15,8 @@ class FillerGameApp : public ci::app::App {
     Player player1_;
     Player player2_;
 
+    float timer_ = 0;
+
     int turn_ = 1;
 
     void DrawButtons() const;
@@ -49,6 +51,9 @@ class FillerGameApp : public ci::app::App {
 
     const int kBoardWidth = kWindowWidth - 2 * kMargin;
     const int kBoardHeight = 400;
+
+    const float kAnimationTime = 21;
+    const float kAnimationScalar = 0.7;
 
     const std::vector<char*> kColors {"blue", "green", "red", "purple", "yellow", "pink"};
 };

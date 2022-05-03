@@ -56,14 +56,31 @@ class Board {
     vec2<char*> board_;
     vec2<int> tile_owner_;
 
+    /**
+     * Randomly genereates a color for each tile in the board
+     */
     void GenerateColors();
 
+    /**
+     * Attempts to claim the tile for a player
+     * @param player_idx
+     * @param color
+     * @param a
+     * @param b
+     */
     void ClaimTile(const int player_idx, char*& color, const int a, const int b);
 
+    /**
+     * Inputs player represented by player_idx choosing a specific color for their turn
+     * @param player_idx
+     * @param color
+     */
     void ApplyMove(const int player_idx, char*& color);
 
   public:
     Board(const int width, const int height, const std::vector<char*>& colors);
+
+    Board(const Board& other);
 
     char* GetTileColor(const int a, const int b) const;
 
@@ -75,8 +92,21 @@ class Board {
 
     int GetHeight() const;
 
+    std::vector<char*> GetColors() const;
+
+    int GetTileOwner(const int a, const int b) const;
+
+    /**
+     * Gets the winner of the game
+     * @return 0 if game is not over, 1 if player 1 won, 2 if player 2 won, 3 if game is tied
+     */
     int GetGameWinner() const;
 
+    /**
+     * Gets the score of a player
+     * @param player_idx
+     * @return
+     */
     int GetPlayerScore(int player_idx) const;
 };
 

@@ -4,11 +4,11 @@
 
 namespace fillergame {
 
-char* Player::GetMove() const {
+char* Player::GetMove(const Board& board) const {
   return "blue";
 }
 
-bool Player::IsManualPlayer() const {
+bool Player::ShouldGetManualInput() const {
   return true;
 }
 
