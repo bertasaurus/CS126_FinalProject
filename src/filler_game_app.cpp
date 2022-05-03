@@ -4,7 +4,7 @@
 namespace fillergame {
 
 FillerGameApp::FillerGameApp() : board_(14, 8, std::vector<char*> {"blue", "green", "red", "purple", "yellow", "pink"}),
-  player1_(ManualPlayer()), player2_(ManualPlayer()) {
+  player1_(ManualPlayer()), player2_(MonteCarloAgent(2, 5)) {
   ci::app::setWindowSize(kWindowWidth, kWindowHeight);
 
 }
@@ -130,16 +130,13 @@ void FillerGameApp::update() {
     return;
   }
 
-  if ((turn_ == 1 && player1_.ShouldGetManualInput()) || (turn_ == 2 && player2_.ShouldGetManualInput())) {
-    return;
-  }
-
-  if (turn_ == 1) {
-    char* color = player1_.GetMove();
+  if (turn_ == 1 && !player1_.ShouldGetManualInput()) {
+    char* color = player1_.GetMove(board_);
     InputMove(turn_, color);
   }
-  else {
-    char* color = player2_.GetMove();
+
+  if (turn_ == 2 && !player2_.ShouldGetManualInput()) {
+    char* color = player2_.GetMove(board_);
     InputMove(turn_, color);
   }
 
@@ -152,7 +149,7 @@ void FillerGameApp::mouseDown(ci::app::MouseEvent event) {
   }
 
   // If the current player is not a manual player, do not process mouse event
-  if (turn_ == 1 && !player1_.ShouldGetManualInput() || turn_ == 2 && !player2_.ShouldGetManualInput()) {
+  if ((turn_ == 1 && !player1_.ShouldGetManualInput()) || (turn_ == 2 && !player2_.ShouldGetManualInput())) {
     return;
   }
 

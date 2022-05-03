@@ -4,8 +4,6 @@
 namespace fillergame {
 
 class Player {
-  private:
-
   public:
     virtual char* GetMove(const Board& board) const;
 

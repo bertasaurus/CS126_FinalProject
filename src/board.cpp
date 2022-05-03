@@ -19,7 +19,7 @@ Board::Board(const Board &other)
       board_(other.width_, other.height_), tile_owner_(other.width_, other.height_),
       tiles_left_(other.tiles_left_) {
   for (int i = 0; i < width_; i++) {
-    for (int j = 0; j < width_; j++) {
+    for (int j = 0; j < height_; j++) {
       board_.set(i, j, other.board_.at(i, j));
       tile_owner_.set(i, j, other.tile_owner_.at(i, j));
     }

@@ -9,7 +9,7 @@ char* Player::GetMove(const Board& board) const {
 }
 
 bool Player::ShouldGetManualInput() const {
-  return true;
+  return false;
 }
 
 }

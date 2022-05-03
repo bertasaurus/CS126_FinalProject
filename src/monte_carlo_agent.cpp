@@ -11,7 +11,7 @@ namespace fillergame {
     char* best_move;
 
     for (char* color : board.GetColors()) {
-      float ev = EvaluateMove(board, recursion_depth_, color);
+      float ev = EvaluateMove(board, recursion_depth_, color, player_idx_);
       if (ev > best) {
         best = ev;
         best_move = color;
@@ -25,10 +25,10 @@ namespace fillergame {
     return false;
   }
 
-  float MonteCarloAgent::EvaluateMove(const Board &board, int depth, char *color) const {
+  float MonteCarloAgent::EvaluateMove(const Board &board, const int depth, char *color, const int turn) const {
     Board board_cpy(board);
 
-    board_cpy.UpdateBoard(player_idx_, color);
+    board_cpy.UpdateBoard(turn, color);
 
     if (depth == 0) {
       return board_cpy.GetPlayerScore(player_idx_);
@@ -36,7 +36,7 @@ namespace fillergame {
 
     float sum = 0;
     for (char* move : board.GetColors()) {
-      sum = sum + EvaluateMove(board_cpy, depth - 1, move);
+      sum = sum + EvaluateMove(board_cpy, depth - 1, move, turn % 2 + 1);
     }
 
     return sum / (float)board.GetColors().size();

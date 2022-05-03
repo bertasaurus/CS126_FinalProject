@@ -6,8 +6,6 @@ namespace fillergame {
 
 class ManualPlayer : public Player {
   public:
-    ManualPlayer();
-
     char* GetMove(const Board& board) const override;
 
     bool ShouldGetManualInput() const override;

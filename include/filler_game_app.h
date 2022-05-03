@@ -6,14 +6,15 @@
 #include "board.h"
 #include "player.h"
 #include "manual_player.h"
+#include "monte_carlo_agent.h"
 
 namespace fillergame {
 
 class FillerGameApp : public ci::app::App {
   private:
     Board board_;
-    Player player1_;
-    Player player2_;
+    ManualPlayer player1_;
+    MonteCarloAgent player2_;
 
     float timer_ = 0;
 

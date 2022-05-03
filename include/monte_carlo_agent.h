@@ -9,7 +9,7 @@ class MonteCarloAgent : public Player {
     int recursion_depth_;
     int player_idx_;
 
-    float EvaluateMove(const Board& board, int depth, char* color) const;
+    float EvaluateMove(const Board& board, const int depth, char* color, const int turn) const;
 
   public:
     MonteCarloAgent(int player_idx, int recursion_depth);
