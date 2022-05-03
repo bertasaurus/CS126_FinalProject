@@ -20,9 +20,9 @@ TEST_CASE("Test board") {
   /*
    * Board colors should now be:
    *
-   * R R B
-   * G B G
    * B G B
+   * G B G
+   * B R R
    *
    */
 

@@ -6,15 +6,15 @@
 #include "board.h"
 #include "player.h"
 #include "manual_player.h"
-#include "monte_carlo_agent.h"
+#include "brute_force_agent.h"
 
 namespace fillergame {
 
 class FillerGameApp : public ci::app::App {
   private:
     Board board_;
-    ManualPlayer player1_;
-    MonteCarloAgent player2_;
+    BruteForceAgent player1_;
+    BruteForceAgent player2_;
 
     float timer_ = 0;
 
@@ -55,6 +55,8 @@ class FillerGameApp : public ci::app::App {
 
     const float kAnimationTime = 21;
     const float kAnimationScalar = 0.7;
+
+    const bool kRestart = true;
 
     const std::vector<char*> kColors {"blue", "green", "red", "purple", "yellow", "pink"};
 };

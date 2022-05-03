@@ -4,7 +4,7 @@
 namespace fillergame {
 
 FillerGameApp::FillerGameApp() : board_(14, 8, std::vector<char*> {"blue", "green", "red", "purple", "yellow", "pink"}),
-  player1_(ManualPlayer()), player2_(MonteCarloAgent(2, 5)) {
+  player1_(BruteForceAgent(1, 1)), player2_(BruteForceAgent(2, 3)) {
   ci::app::setWindowSize(kWindowWidth, kWindowHeight);
 
 }
@@ -108,6 +108,7 @@ void FillerGameApp::DrawBoard() const {
       glm::vec2 top_left = glm::vec2(i * tile_width, j * tile_height);
       glm::vec2 bottom_right = glm::vec2((i + 1) * tile_width, (j + 1) * tile_height);
 
+      // draw the tiles to be bigger depending on the timer in order to create the animation effect
       if (other_idx == board_.GetTileOwner(i, j)) {
         float scalar = (timer_ / kAnimationTime) * kAnimationScalar;
 
@@ -125,19 +126,30 @@ void FillerGameApp::DrawBoard() const {
 }
 
 void FillerGameApp::update() {
+  // let the animation finish before trying to get any more moves
   if (timer_ > 0) {
     timer_ = timer_ - 1;
+    return;
+  }
+
+  if (board_.GetGameWinner() != 0) {
+    if (kRestart) {
+      board_ = Board(14, 8, std::vector<char*> {"blue", "green", "red", "purple", "yellow", "pink"});
+      timer_ = kAnimationTime;
+    }
     return;
   }
 
   if (turn_ == 1 && !player1_.ShouldGetManualInput()) {
     char* color = player1_.GetMove(board_);
     InputMove(turn_, color);
+    return;
   }
 
   if (turn_ == 2 && !player2_.ShouldGetManualInput()) {
     char* color = player2_.GetMove(board_);
     InputMove(turn_, color);
+    return;
   }
 
 }

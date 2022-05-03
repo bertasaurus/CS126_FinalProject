@@ -1,12 +1,12 @@
 #pragma once
 
-#include "monte_carlo_agent.h"
+#include "brute_force_agent.h"
 
 namespace fillergame {
-  MonteCarloAgent::MonteCarloAgent(int player_idx, int recursion_depth)
+  BruteForceAgent::BruteForceAgent(int player_idx, int recursion_depth)
       : player_idx_(player_idx), recursion_depth_(recursion_depth) {}
 
-  char* MonteCarloAgent::GetMove(const Board& board) const {
+  char* BruteForceAgent::GetMove(const Board& board) const {
     float best = 0;
     char* best_move;
 
@@ -21,11 +21,11 @@ namespace fillergame {
     return best_move;
   }
 
-  bool MonteCarloAgent::ShouldGetManualInput() const {
+  bool BruteForceAgent::ShouldGetManualInput() const {
     return false;
   }
 
-  float MonteCarloAgent::EvaluateMove(const Board &board, const int depth, char *color, const int turn) const {
+  float BruteForceAgent::EvaluateMove(const Board &board, const int depth, char *color, const int turn) const {
     Board board_cpy(board);
 
     board_cpy.UpdateBoard(turn, color);
@@ -34,12 +34,15 @@ namespace fillergame {
       return board_cpy.GetPlayerScore(player_idx_);
     }
 
-    float sum = 0;
+    float best = 0;
     for (char* move : board.GetColors()) {
-      sum = sum + EvaluateMove(board_cpy, depth - 1, move, turn % 2 + 1);
+      float ev = EvaluateMove(board_cpy, depth - 1, move, turn % 2 + 1);
+      if (ev > best) {
+        best = ev;
+      }
     }
 
-    return sum / (float)board.GetColors().size();
+    return best;
   }
 
 }

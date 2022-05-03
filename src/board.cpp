@@ -41,10 +41,14 @@ void Board::ClaimTile(const int player_idx, char *&color, const int a, const int
     return;
   }
 
-  if ((a > 0 && player_idx == tile_owner_.at(a - 1, b) && strcmp(board_.at(a, b), color) == 0)
-      || (a < width_ - 1 && player_idx == tile_owner_.at(a + 1, b) && strcmp(board_.at(a, b), color) == 0)
-      || (b > 0 && player_idx == tile_owner_.at(a, b - 1) && strcmp(board_.at(a, b), color) == 0)
-      || (b < height_ - 1 && player_idx == tile_owner_.at(a, b + 1) && strcmp(board_.at(a, b), color) == 0)) {
+  // check the if the adjacent tiles are owned by the player and the same color
+
+  bool left = a > 0 && player_idx == tile_owner_.at(a - 1, b) && strcmp(board_.at(a, b), color) == 0;
+  bool right = a < width_ - 1 && player_idx == tile_owner_.at(a + 1, b) && strcmp(board_.at(a, b), color) == 0;
+  bool down = b > 0 && player_idx == tile_owner_.at(a, b - 1) && strcmp(board_.at(a, b), color) == 0;
+  bool up = b < height_ - 1 && player_idx == tile_owner_.at(a, b + 1) && strcmp(board_.at(a, b), color) == 0;
+
+  if (left || right || down || up) {
     tile_owner_.set(a, b, player_idx);
     tiles_left_--;
   }
@@ -59,6 +63,7 @@ void Board::ApplyMove(const int player_idx, char *&color) {
     }
   }
 
+  // recursively apply the move until no more tiles are claimed to claim groups of tiles of the same color
   if (tmp != tiles_left_) {
     ApplyMove(player_idx, color);
   }
@@ -74,7 +79,6 @@ void Board::UpdateBoard(const int player_idx, char *&color) {
       }
     }
   }
-
 }
 
 char* Board::GetTileColor(const int a, const int b) const {
