@@ -155,7 +155,7 @@ void FillerGameApp::update() {
 }
 
 void FillerGameApp::mouseDown(ci::app::MouseEvent event) {
-  // If the game is still doing an animation, do not process moust event
+  // If the game is still doing an animation, do not process mouse event
   if (timer_ > 0) {
     return;
   }
